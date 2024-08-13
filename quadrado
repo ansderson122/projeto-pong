@@ -1,0 +1,73 @@
+_start:
+.equ saida_x 0x400
+.equ saida_y 0x418
+.equ resetTela 0x430
+.equ escritaTela 0x448
+.equ corTela 0x460
+.equ memoria_de_video 0x478
+.equ controle 0x878
+
+li a1,0
+li s7, 1
+sw s7,resetTela(zero)
+
+# definido a cor 
+li s8, 0xff # vermenho
+slli s8,s8,16
+li s9, 0xff # verde
+slli s9,s9,8
+li s10, 0xff # azul
+add s8,s8,s9
+add t5,s8,s10      #O t5 vai ser o branco 
+sw t5 , corTela(zero)
+sub t6, t5,t5     #O t6 vai ser o preto 
+# fim da cor
+
+
+li a1,0
+li t0,15
+li s8,10 # i = 0
+
+begin_for_i:
+bge s8,t0,end_for_i	
+li t1,84
+li s9,44 # j = 0
+
+begin_for_j:
+bge s9,t1,end_for_j
+sw s8, saida_x(zero) # = 0x400 + 0 
+sw s9, saida_y(zero)
+sw s7, escritaTela(zero) # h
+addi s9,s9,1
+j begin_for_j
+end_for_j:
+addi s8,s8,1
+j begin_for_i
+end_for_i:
+bge a1,s7,fim
+addi a1,a1,1
+li s8, 236
+li t0, 241
+j begin_for_i
+
+
+
+
+
+
+
+
+fim:
+j fim
+
+
+
+
+
+
+
+
+
+
+
+
