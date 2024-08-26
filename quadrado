@@ -1,130 +1,128 @@
 _start:
-.equ saida_x 0x400
-.equ saida_y 0x418
-.equ resetTela 0x430
-.equ escritaTela 0x448
-.equ corTela 0x460
-.equ memoria_de_video 0x478
-.equ controle 0x878 # esse endereço é muito grande
-.equ velocidadePlayer 1 
+    .equ saida_x 0x400
+    .equ saida_y 0x418
+    .equ resetTela 0x430
+    .equ escritaTela 0x448
+    .equ corTela 0x460
+    .equ memoria_de_video 0x478
+    .equ controle 0x878 # esse endereço é muito grande
+    .equ velocidadePlayer 1 
 
-li a0, 0x8
-slli a0,a0,8
-addi tp,a0,0x78 # tp vai ser usado para o endereço do controle 
+    li a0, 0x8
+    slli a0, a0, 8
+    addi tp, a0, 0x78 # tp vai ser usado para o endereço do controle 
 
-li a1,0
-li s7, 1
-sw s7,resetTela(zero)
+    li a1, 0
+    li s7, 1
+    sw s7, resetTela(zero)
 
-# definido a cor 
-li s8, 0xff # vermenho
-slli s8,s8,16
-li s9, 0xff # verde
-slli s9,s9,8
-li s10, 0xff # azul
-add s8,s8,s9
-add t6,s8,s10      #O t6 vai ser o branco 
-sw t6 , corTela(zero)
-# fim da cor
-li t3, 63
-li t4,63
+    # definido a cor 
+    li s8, 0xff # vermenho
+    slli s8, s8, 16
+    li s9, 0xff # verde
+    slli s9, s9, 8
+    li s10, 0xff # azul
+    add s8, s8, s9
+    add t6, s8, s10      #O t6 vai ser o branco 
+    sw t6, corTela(zero)
+    # fim da cor
+    li t3, 63
+    li t4, 63
 
-li a1,0
-li t0,14
-li s8,10 # i = 0
+    li a1, 0
+    li t0, 14
+    li s8, 10 # i = 0
 
-begin_for_i:
-bge s8,t0,end_for_i	
-li t1,84
-li s9,43 # j = 0, a altura do player e de 41 pixels 
+    begin_for_i:
+        bge s8, t0, end_for_i	
+        li t1, 84
+        li s9, 43 # j = 0, a altura do player e de 41 pixels 
 
-begin_for_j:
-bge s9,t1,end_for_j
-sw s8, saida_x(zero) # = 0x400 + 0 
-sw s9, saida_y(zero)
-sw s7, escritaTela(zero) # h
-addi s9,s9,1
-j begin_for_j
-end_for_j:
-addi s8,s8,1
-j begin_for_i
-end_for_i:
-bge a1,s7,loopPrincipal
-addi a1,a1,1
-li s8, 236
-li t0, 241
-j begin_for_i
+    begin_for_j:
+        bge s9, t1, end_for_j
+        sw s8, saida_x(zero) # = 0x400 + 0 
+        sw s9, saida_y(zero)
+        sw s7, escritaTela(zero) # h
+        addi s9, s9, 1
+        j begin_for_j
 
+    end_for_j:
+        addi s8, s8, 1
+        j begin_for_i
 
-loopPrincipal:
-jal ra, pressButton
+    end_for_i:
+        bge a1, s7, loopPrincipal
+        addi a1, a1, 1
+        li s8, 236
+        li t0, 241
+        j begin_for_i
 
-j loopPrincipal
+    loopPrincipal:
+        jal ra, pressButton
 
+    j loopPrincipal
 
+    pressButton: 
+        li s7,1
+        lw a0, 0(tp)
+        sw s7,0(tp)
+        beq a0, zero, fim_pressButton
+        addi a0,a0, -1
+        beq a0, zero ,  moveParaBaixo
+        addi a0,a0, -1
+        beq a0, zero , moveParaCima
+        fim_pressButton:
+            jr ra 
+    moveParaCima:
+        sw s7,0(tp)
+        li a3, 10
+        addi a4,t3, -21
+        addi a1,t3, 21
+        li a5, 4
+    moveParaCima_i:
+        beq a5,zero, moveParaCima_i_fim
+        sw t6, corTela(zero)
+        sw a3, saida_x(zero)
+        sw a4, saida_y(zero)
+        sw s7, escritaTela(zero)
+        addi a5,a5,-1
+        sw zero, corTela(zero)
+        sw a3, saida_x(zero)
+        sw a1, saida_y(zero)
+        sw s7, escritaTela(zero)
+        addi a3,a3,1
+        j moveParaCima_i
+    moveParaCima_i_fim:
+        addi t3,t3,-1
+        addi a1,a1,-1
+        sw zero, saida_y(zero)
+        jr ra
+    moveParaBaixo:
+        sw s7,0(tp)
+        li a3, 10
+        addi a4,t3, 21
+        addi a1,t3, -21
+        li a5, 4
+    moveParaBaixo_i:
+        beq a5,zero, moveParaBaixo_i_fim
+        sw t6, corTela(zero)
+        sw a3, saida_x(zero)
+        sw a4, saida_y(zero)
+        sw s7, escritaTela(zero)
+        addi a5,a5,-1
+        sw zero, corTela(zero)
+        sw a3, saida_x(zero)
+        sw a1, saida_y(zero)
+        sw s7, escritaTela(zero)
+        addi a3,a3,1
+        j moveParaBaixo_i
+    moveParaBaixo_i_fim:
+        addi t3,t3,1
+        sw zero, saida_y(zero)
+        jr ra
 
-
-pressButton: 
-li s7,1
-lw a0, 0(tp)
-sw s7,0(tp)
-beq a0, zero, fim_pressButton
-addi a0,a0, -1
-beq a0, zero ,  moveParaBaixo
-addi a0,a0, -1
-beq a0, zero , moveParaCima
-fim_pressButton:
-jr ra 
-moveParaCima:
-sw s7,0(tp)
-li a3, 10
-addi a4,t3, -21
-addi a1,t3, 21
-li a5, 4
-moveParaCima_i:
-beq a5,zero, moveParaCima_i_fim
-sw t6, corTela(zero)
-sw a3, saida_x(zero)
-sw a4, saida_y(zero)
-sw s7, escritaTela(zero)
-addi a5,a5,-1
-sw zero, corTela(zero)
-sw a3, saida_x(zero)
-sw a1, saida_y(zero)
-sw s7, escritaTela(zero)
-addi a3,a3,1
-j moveParaCima_i
-moveParaCima_i_fim:
-addi t3,t3,-1
-addi a1,a1,-1
-sw zero, saida_y(zero)
-jr ra
-moveParaBaixo:
-sw s7,0(tp)
-li a3, 10
-addi a4,t3, 21
-addi a1,t3, -21
-li a5, 4
-moveParaBaixo_i:
-beq a5,zero, moveParaBaixo_i_fim
-sw t6, corTela(zero)
-sw a3, saida_x(zero)
-sw a4, saida_y(zero)
-sw s7, escritaTela(zero)
-addi a5,a5,-1
-sw zero, corTela(zero)
-sw a3, saida_x(zero)
-sw a1, saida_y(zero)
-sw s7, escritaTela(zero)
-addi a3,a3,1
-j moveParaBaixo_i
-moveParaBaixo_i_fim:
-addi t3,t3,1
-sw zero, saida_y(zero)
-jr ra
-
-fim:
-j fim
+    fim:
+        j fim
 
 
 
