@@ -2,32 +2,38 @@
 
 	#bom de colocar os dados abaixo como 128 e 64. Dai o bitmap display como 512x256 e pixels 4 e 4
 
-	widht: .word 128
+	widht: .word 64
 	height: .word 64
+	memoria: .word 0x10040000
 	
 	#é na memoria $gp (o gp vai de 10008000 ate 10010000, isso sao 0x8000 bytes (32768), como o word tem 4 bytes, sao 2^13, ou 128x64)
 
+	talvez_coord_x: .word 0
+	talvez_coord_y: .word 0
 	coord_x: .word 0
 	coord_y:.word 0
-	
-	#antiga_coord_x: .word 0
-	#antiga_coord_y:.word 0
 	
 	tam_bola_x: .word 4
 	tam_bola_y: .word 4
 	
-	cor_aleatoria: .word 1
+	cor_aleatoria: .word 0
 	cor_bola: .word 0xFFFFFF
 	cor_fundo: .word 0x0
-	efeito_5d: .word 1
+	cor_obstaculo: .word 0xFFFFFF
+	efeito_5d: .word 0
 	
 	velo_x: .word 0
-	velo_y: .word 0
-	velocidade_maxima: .word 5 	#em qualquer direcao
+	velo_y: .word 3
+	velocidade_maxima: .word 5 	#em qualquer direcao, ideal 5
 	energia_maxima: .word 0		#se 0, sera o dobro da velo max
 	
 	delay: .word 10 		#em milissegundos
 	se_som: .word 1
+	
+	qtd_obstaculos: .word 10
+	tam_max_obstaculos: .word 30
+	
+	jogador_4_pontas: .word 0,0,0,0
 .text
 
 	j main
@@ -47,37 +53,43 @@
 			move $t5,$zero
 			move $t6,$zero
 			
-		li $v0, 42
-		la $t2, velocidade_maxima
-		lw $t2,0($t2)
-		mul $t1,$t2,2
-		addi $t1,$t1,1
-		add $a1,$t1,$zero
-		syscall
-		
-		sub $a0,$a0,$t2
-		la $t2,velo_x
-		sw $a0,0($t2)			#velocidade aleatoria em X
-		
-		li $v0, 42
-		la $t2, velocidade_maxima
-		lw $t2,0($t2)
-		mul $t1,$t2,2
-		addi $t1,$t1,1
-		add $a1,$t1,$zero
-		syscall
-		
-		sub $a0,$a0,$t2
-		la $t2,velo_y
-		sw $a0,0($t2)			#velocidade aleatoria em Y
-		
-			lw $t2,energia_maxima
-			bne $t2,0,organizar_coords
+		velocidade_aleatoria:
 			
-			lw $t2,velocidade_maxima
-			mul $t2,$t2,2
-			sw $t2,energia_maxima
+			li $v0, 42
+			la $t2, velocidade_maxima
+			lw $t2,0($t2)
+			mul $t1,$t2,2
+			addi $t1,$t1,1
+			add $a1,$t1,$zero
+			syscall
 		
+			sub $a0,$a0,$t2
+			la $t2,velo_x
+			sw $a0,0($t2)			#velocidade aleatoria em X (NÃO DEIXAR AS DUAS SER 0)
+			add $t7,$a0,$zero
+		
+			li $v0, 42
+			la $t2, velocidade_maxima
+			lw $t2,0($t2)
+			mul $t1,$t2,2
+			addi $t1,$t1,1
+			add $a1,$t1,$zero
+			syscall
+		
+			sub $a0,$a0,$t2
+			la $t2,velo_y
+			sw $a0,0($t2)			#velocidade aleatoria em Y
+			add $t7,$t7,$a0
+			
+			beqz $t7,velocidade_aleatoria
+		
+				lw $t2,energia_maxima
+				bne $t2,0,organizar_coords
+			
+				lw $t2,velocidade_maxima
+				mul $t2,$t2,2
+				sw $t2,energia_maxima
+				
 			organizar_coords:
 		
 		la $t2,height
@@ -127,8 +139,9 @@
 		#------------ operações
 		
 		mul $t1,$s5,4
-		add $s1,$gp,$t1			#caminhar em GP para o indice horizontal, pelo tamanho da word, guardar em s1
-			
+		#add $s1,$gp,$t1		#caminhar em GP para o indice horizontal, pelo tamanho da word, guardar em s1
+		addi $s1,$t1,0x10040000
+		
 		la $t2, widht
 		lw $t2, 0($t2)			#usar t2 pra segurar a altura para calcular a largura e quantas linhas andou
 			
@@ -163,21 +176,115 @@
 			
 		jr $ra
 		
-	atualizar:				#PRECISO PARAR DE USAR O T1 PARA O DADO MAIS IMPORTANTE: NOVA COORD
+	desenhar_obstaculos:
 	
+		li $t0,0			#em t0 vai ser o contador de quantos obstaculos ja foram impressos
+		lw $t1,qtd_obstaculos		#em t1 vai ser a quantidade maxima desses objetos
+		
+		li $t2,0
+		li $t7,0			#os dois temporarios
+		
+		bge $t0,$t1,fim_loop_obstaculos
+		
+		loop_obstaculos:
+		
+			li $v0, 42
+			lw $a1,tam_max_obstaculos
+			syscall
+			addi $a0,$a0,1
+			move $t5,$a0		#t5 vai ser o tam x desse obstaculo especifico
+			
+			lw $t2,tam_bola_x
+			bge $t5,$t2,tam_obst_x_ok
+			li $t5,4		#O OBSTACULO NAO PODE SER MENOR QUE O JOGADOR POIS SE NAO AS VEZES O JOGADOR PODE SER PERFURADO
+			
+			tam_obst_x_ok:
+			
+			li $v0, 42
+			lw $a1,tam_max_obstaculos
+			syscall
+			addi $a0,$a0,1
+			move $t6,$a0		#t6 vai ser o tam y desse obstaculo especifico
+			
+			lw $t2,tam_bola_y
+			bge $t6,$t2,tam_obst_y_ok
+			li $t6,4
+			
+			tam_obst_y_ok:
+			
+			lw $t3,widht
+			lw $t4,height
+			sub $t4,$t4,$t6
+			sub $t3,$t3,$t5
+			
+			move $a1,$t3
+			li $v0,42
+			syscall
+			move $t3,$a0		#t3 agora é a coord x do primeiro pixel desse obstaculo
+			
+			move $a1,$t4
+			li $v0,42
+			syscall
+			move $t4,$a0		#t4 agora é a coord y do primeiro pixel desse obstaculo
+
+			li $s0,0			#s0 vai ser o primeiro pixel desse obstaculo
+			li $t8,0			#eu vou usar t8 para caminhar em x, precisa ser transformado em word
+			li $t9,0			#eu vou usar t9 para caminhar em y
+		
+			#------------ operações
+		
+			mul $t2,$t3,4
+			#add $s1,$gp,$t1		#caminhar em GP para o indice horizontal, pelo tamanho da word, guardar em s0
+			addi $s0,$t2,0x10040000
+		
+			lw $t2, widht			#usar t2 pra segurar a altura para calcular a largura e quantas linhas andou
+			sub $t7,$t4,1			#diminuir 1 porque o indice 1 em y concluiu 0 linhas
+			mul $t2,$t7,$t2
+			mul $t2,$t2,4			#considerar o tamanho das words
+			add $s0,$s0,$t2			#caminhar isso na memoria no indice y, isso tudo apenas para ter S0 COMO PRIMEIRO PIXEL
+		
+			loop_desenho_obstaculo_x:
+			
+				mul $t2,$t8,4
+				add $s7,$s0,$t2
+				lw $t2, cor_obstaculo
+				sw $t2,0($s7)		#anda uma iteração em X, e guarda a cor no primeiro pixel, isso vai ser o s7 pois e importante
+			
+				li $t9,0
+				loop_desenho_obstaculo_y:
+
+					lw $t2,widht
+					mul $t7,$t9,4
+					mul $t7,$t7,$t2
+				
+					add $t7,$s7,$t7
+					lw $t2,cor_obstaculo
+					sw $t2,0($t7)
+				
+					addi $t9,$t9,1
+					blt $t9,$t6,loop_desenho_obstaculo_y
+			
+				addi $t8,$t8,1		#verifica o loop, pra andar todos os pixels ate o tamanho horizontal
+				blt $t8,$t5,loop_desenho_obstaculo_x
+			
+			addi $t0,$t0,1
+			blt $t0,$t1,loop_obstaculos
+		
+		fim_loop_obstaculos:
+		
+		jr $ra
+		
+	atualizar:				#PRECISO PARAR DE USAR O T1 PARA O DADO MAIS IMPORTANTE: NOVA COORD
+
 		#---------------------- X
 	
-		la $t2,velo_x
-		lw $t1,0($t2)
-		la $t2,coord_x
-		lw $t3,0($t2)			
+		lw $t1,velo_x
+		lw $t3,coord_x		
 		add $t1,$t1,$t3			#essa é a nova coordenada de X, somando a coordenada anterior a velocidade atual
 		
-		la $t2, widht
-		lw $t4, 0($t2)
-		la $t2, tam_bola_x
-		lw $t2, 0($t2)			#agora eu tenho o indice maximo que a bola pode nascer, para comparar
-		sub $t3,$t4,$t2			#PRECISA DIMINUIR '1' AQUI??
+		lw $t4,widht
+		lw $t2,tam_bola_x		#agora eu tenho o indice maximo que a bola pode nascer, para comparar
+		sub $t4,$t4,$t2			#PRECISA DIMINUIR '1' AQUI??
 		
 		bgt $t1,$t3,bater_horiz		#aqui verifico se bateu na parede, caso nao e necessario ignorar as linhas abaixo
 		blt $t1,$zero,bater_horiz
@@ -239,6 +346,7 @@
 		
 		salvar_x:
 		
+			#la $t2,talvez_coord_x
 			la $t2,coord_x
 			sw $t1,0($t2)
 			
@@ -255,7 +363,7 @@
 		la $t2, tam_bola_y
 		lw $t2, 0($t2)			#agora eu tenho o indice maximo que a bola pode nascer, para comparar
 		sub $t3,$t4,$t2			#PRECISA DIMINUIR '1' AQUI?? PQ PARECE QUE O LIMITE DA HITBOX E 1 PIXEL ANTES
-						addi $t3,$t3,1
+						addi $t3,$t3,-1		#o que e essa linha de codigo? ela estava adicionando 1 a t3, mudei p -1
 		
 		bgt $t1,$t3,bater_verti		#aqui verifico se bateu na parede, caso nao e necessario ignorar as linhas abaixo
 		blt $t1,$zero,bater_verti
@@ -317,16 +425,123 @@
 
 		salvar_y:
 
+			#la $t2,talvez_coord_y
 			la $t2,coord_y
 			sw $t1,0($t2)
 		
-			jr $ra
+		jr $ra
+		
+	quicar:
+	
+		#aqui eu preciso calcular as 4 ponta e guardar esses 4 endereços
+		#se algum desses 4 endereços for branco, quicou
+		
+		#lw $t5,talvez_coord_x
+		#lw $t6,talvez_coord_y
+		lw $t5,coord_x
+		lw $t6,coord_y
+		
+		mul $t2,$t5,4
+		addi $s2,$2,0x10040000
+		lw $t2,widht
+		sub $t1,$t6,1			#diminuir 1 porque o indice 1 em y concluiu 0 linhas
+		mul $t1,$t1,$t2
+		mul $t1,$t1,4			#considerar o tamanho das words
+		add $s2,$s2,$t1			#caminhar isso na memoria no indice y, isso tudo apenas para ter S2 COMO PRIMEIRO PIXEL
+		
+		la $t2,jogador_4_pontas
+		sw $s2,0($t2)			#salvando a ponta xy
+		
+		lw $t3,tam_bola_x
+		mul $t3,$t3,4
+		add $t0,$s2,$t3
+		sw $t0,4($t2)			#salvando a ponta x4y
+		
+		lw $t4,tam_bola_y
+		sub $t4,$t4,1
+		lw $t2,widht
+		mul $t4,$t4,$t2
+		mul $t4,$t4,4
+		add $t0,$s2,$t4
+		la $t2,jogador_4_pontas
+		sw $t0,8($t2)			#salvando ponta xy4
+		
+		add $t0,$s2,$t3
+		add $t0,$t0,$t4
+		sw $t0,12($t2)			#salvando ponta x4y4
+		
+		la $t2,jogador_4_pontas
+		lw $t7,cor_obstaculo
+		
+		la $t1,0($t2)
+		lw $t0,($t1)			#certo isso?
+		beq $t0,$t7,quicou
+		
+		la $t1,4($t2)
+		lw $t0,($t1)
+		beq $t0,$t7,quicou
+		
+		la $t1,8($t2)
+		lw $t0,($t1)
+		beq $t0,$t7,quicou
+		
+		la $t1,12($t2)
+		lw $t0,($t1)
+		beq $t0,$t7,quicou		#AQUI E POSSIVEL CRIAR VARIAS LOGICAS PARA VELOCIDADE DEPENDENDO DO ANGULO DA QUICADA
+		
+		nao_quicou:
+		
+		#la $t2,coord_x			#ESSAS 6 LINHAS SAO PARA CASO USAR O 'TALVEZ_COORD'
+		#lw $t1,talvez_coord_x
+		#sw $t1,($t2)
+		
+		#la $t2,coord_y
+		#lw $t1,talvez_coord_y
+		#sw $t1,($t2)
+		
+		jr $ra
+		
+		quicou:
+		
+				lw $t2,se_som
+				bne $t2,1,fim_som_quicar
+				som_quicar:
+				li $v0,31
+				li $a0, 55	
+				li $a1, 1000
+				li $a2, 32
+				li $a3, 126
+				syscall
+				fim_som_quicar:
+			
+			la $t2,velo_x
+			lw $t1,($t2)
+			mul $t1,$t1,-1			#inverter a direção do movimento, mesma velocidade para o lado contrário, ja que quicou
+			sw $t1,($t2)
+			
+			la $t2,coord_x
+			lw $t3,($t2)
+			add $t3,$t3,$t1		#desfazer o movimento onde quicou (AS 4 NAO E NECESSARIA SE USAR 'TALVEZ_COORD')
+			sw $t3,($t2)
+			
+			la $t2,velo_y
+			lw $t1,($t2)
+			mul $t1,$t1,-1
+			sw $t1,($t2)
+			
+			la $t2,coord_y
+			lw $t4,($t2)
+			add $t4,$t4,$t1		#desfazer o movimento onde quicou (AS 4 NAO E NECESSARIA SE USAR 'TALVEZ_COORD')
+			sw $t4,($t2)
+			
+		jr $ra
 
 	# -----------------------------------------------------------------------------------------
 	
 	main:			#OTIMIZAR IMPRESSAO.. TESTAR..
 	
 		jal spawn
+		#jal desenhar_obstaculos
 		
 		loop_principal:
 		
@@ -356,6 +571,7 @@
 				syscall
 			
 				jal atualizar
+				#jal quicar
 			
 			la $t0,cor_fundo
 			lw $t0,0($t0)
