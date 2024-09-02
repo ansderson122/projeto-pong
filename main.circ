@@ -67,25 +67,25 @@
     <comp lib="0" loc="(1150,770)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="X"/>
-      <a name="width" val="8"/>
+      <a name="width" val="6"/>
     </comp>
     <comp lib="0" loc="(1180,980)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="Y"/>
-      <a name="width" val="7"/>
-    </comp>
-    <comp lib="0" loc="(1280,770)" name="Splitter">
-      <a name="facing" val="south"/>
-      <a name="fanout" val="8"/>
-      <a name="incoming" val="8"/>
-    </comp>
-    <comp lib="0" loc="(1280,980)" name="Splitter">
-      <a name="facing" val="south"/>
-      <a name="fanout" val="7"/>
-      <a name="incoming" val="7"/>
+      <a name="width" val="5"/>
     </comp>
     <comp lib="0" loc="(130,460)" name="Tunnel">
       <a name="label" val="CLK"/>
+    </comp>
+    <comp lib="0" loc="(1300,1000)" name="Splitter">
+      <a name="facing" val="south"/>
+      <a name="fanout" val="5"/>
+      <a name="incoming" val="5"/>
+    </comp>
+    <comp lib="0" loc="(1300,790)" name="Splitter">
+      <a name="facing" val="south"/>
+      <a name="fanout" val="6"/>
+      <a name="incoming" val="6"/>
     </comp>
     <comp lib="0" loc="(1470,1150)" name="Tunnel">
       <a name="label" val="Escrita"/>
@@ -114,12 +114,12 @@
     <comp lib="0" loc="(340,1200)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="X"/>
-      <a name="width" val="8"/>
+      <a name="width" val="6"/>
     </comp>
     <comp lib="0" loc="(340,1230)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="Y"/>
-      <a name="width" val="7"/>
+      <a name="width" val="5"/>
     </comp>
     <comp lib="0" loc="(340,710)" name="Tunnel">
       <a name="facing" val="east"/>
@@ -152,7 +152,6 @@
     </comp>
     <comp lib="11" loc="(1050,480)" name="SocBus">
       <a name="SocBusIdentifier" val="0x0000019131E813675037061b"/>
-      <a name="TraceVisible" val="false"/>
     </comp>
     <comp lib="11" loc="(1140,340)" name="Socmem">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
@@ -212,35 +211,24 @@
       <a name="facing" val="south"/>
     </comp>
     <comp lib="5" loc="(380,1080)" name="RGB Video">
-      <a name="width" val="256"/>
+      <a name="height" val="32"/>
+      <a name="scale" val="8"/>
+      <a name="width" val="64"/>
     </comp>
     <comp lib="5" loc="(560,1130)" name="Button"/>
     <comp lib="5" loc="(560,1160)" name="Button"/>
     <comp loc="(870,1110)" name="controle"/>
     <wire from="(100,460)" to="(130,460)"/>
     <wire from="(1150,1210)" to="(1210,1210)"/>
-    <wire from="(1150,770)" to="(1280,770)"/>
-    <wire from="(1180,980)" to="(1280,980)"/>
+    <wire from="(1150,770)" to="(1300,770)"/>
+    <wire from="(1180,980)" to="(1300,980)"/>
     <wire from="(1210,1180)" to="(1210,1210)"/>
     <wire from="(1210,1210)" to="(1350,1210)"/>
-    <wire from="(1290,1000)" to="(1290,1020)"/>
-    <wire from="(1290,790)" to="(1290,810)"/>
-    <wire from="(1300,1000)" to="(1300,1020)"/>
-    <wire from="(1300,790)" to="(1300,810)"/>
-    <wire from="(1310,1000)" to="(1310,1020)"/>
-    <wire from="(1310,790)" to="(1310,810)"/>
-    <wire from="(1320,1000)" to="(1320,1020)"/>
-    <wire from="(1320,790)" to="(1320,810)"/>
-    <wire from="(1330,1000)" to="(1330,1020)"/>
-    <wire from="(1330,790)" to="(1330,810)"/>
-    <wire from="(1340,1000)" to="(1340,1020)"/>
+    <wire from="(1300,770)" to="(1300,790)"/>
+    <wire from="(1300,980)" to="(1300,1000)"/>
     <wire from="(1340,1350)" to="(1340,1360)"/>
-    <wire from="(1340,790)" to="(1340,810)"/>
-    <wire from="(1350,1000)" to="(1350,1020)"/>
     <wire from="(1350,1210)" to="(1350,1230)"/>
     <wire from="(1350,1350)" to="(1350,1370)"/>
-    <wire from="(1350,790)" to="(1350,810)"/>
-    <wire from="(1360,790)" to="(1360,810)"/>
     <wire from="(1450,1120)" to="(1450,1150)"/>
     <wire from="(1450,1120)" to="(1470,1120)"/>
     <wire from="(1450,1150)" to="(1470,1150)"/>
