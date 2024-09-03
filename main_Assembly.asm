@@ -218,28 +218,27 @@ j verifica_fim
 
 verifica_y_player:
 add s2,a6,t3
-sub s3,a6,t3
-slt s4,s2,a3
-slt s5,a3,s3
-and s5,s5,s4
-beqz s5,verifica_altera_x
-j verifica_fim
+sub s3,t3,a6
+j verifica_altera_x
 
 verifica_y_IA:
 add s2,a6,t4
-sub s3,a6,t4
-slt s4,s2,a3
-slt s5,a3,s3
-and s5,s5,s4
-beqz s5,verifica_altera_x
-j verifica_fim
+sub s3,t4,a6
+j verifica_altera_x
 
 verifica_altera_x:
+slt s4,s2,a3
+slt s5,a3,s3
+or s5,s5,s4
+beqz s5,altera_direcao_x
+j verifica_fim
+
+altera_direcao_x:
 li s2,-1
 mul a4,a4,s2
 sw a4,vetor_direcao(zero)
-verifica_fim:
 
+verifica_fim:
 fim_movimento_bola:
 addi t5,t5,1
 jr ra 
