@@ -219,15 +219,19 @@ j verifica_fim
 verifica_y_player:
 add s2,a6,t3
 sub s3,a6,t3
-bge s2,a3, verifica_altera_x
-bge s3,a3, verifica_altera_x
+slt s4,s2,a3
+slt s5,a3,s3
+and s5,s5,s4
+beqz s5,verifica_altera_x
 j verifica_fim
 
 verifica_y_IA:
 add s2,a6,t4
 sub s3,a6,t4
-bge s2,a3, verifica_altera_x
-bge s3,a3, verifica_altera_x
+slt s4,s2,a3
+slt s5,a3,s3
+and s5,s5,s4
+beqz s5,verifica_altera_x
 j verifica_fim
 
 verifica_altera_x:
