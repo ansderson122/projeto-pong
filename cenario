@@ -1,0 +1,131 @@
+_start:
+    .equ saida_x 0x400
+    .equ saida_y 0x418
+    .equ resetTela 0x430
+    .equ escritaTela 0x448
+    .equ corTela 0x460
+    .equ memoria_de_video 0x478
+    .equ controle 0x878
+    .equ velocidadePlayer 1 
+
+    # Resetando a Tela
+    li a1, 0                # Carrega 0 em a1.
+    li s7, 1                # Carrega 1 em s7.
+    sw s7, resetTela(zero)  # Reinicia a tela.
+
+    # Definindo a cor de fundo azul escuro (0x000036)
+    li t6, 0x0
+    slli t6, t6, 8
+    addi t6, t6, 0x36       # t6 = 0x000036
+    sw t6, corTela(zero)
+
+    # Atualiza a tela após definir a cor de fundo
+    sw s7, escritaTela(zero) 
+
+    # Desenhando a barra do topo
+    li s8, 0                # Coordenada X inicial
+    li s9, 0                # Coordenada Y inicial
+    li t0, 256              # Largura da tela (256 pixels)
+    li t1, 4                # Altura da barra
+    li t3, 0                # Contador da altura da barra
+
+    desenhar_barra_topo:
+        bge t3, t1, fim_barra_topo # Verifica se a altura foi desenhada completamente
+        li s8, 0                    # Reinicia a coordenada X para cada linha de altura
+
+        barra_topo:
+            bge s8, t0, fim_linha_barra_topo # Verifica se a linha da barra foi desenhada completamente
+            li t2, 0xff         # Parte alta da cor branca (0xFFFFFF)
+            slli t2, t2, 8
+            addi t2, t2, 0xff
+            slli t2, t2, 8
+            addi t2, t2, 0xff   # t2 = 0xFFFFFF
+            sw t2, corTela(zero)
+            sw s8, saida_x(zero)
+            sw s9, saida_y(zero)
+            sw s7, escritaTela(zero)
+            addi s8, s8, 1
+            j barra_topo
+
+        fim_linha_barra_topo:
+            addi s9, s9, 1      # Avança para a próxima linha da altura
+            addi t3, t3, 1      # Incrementa o contador da altura
+            j desenhar_barra_topo
+        
+    fim_barra_topo:
+
+    # Desenhando a barra de baixo
+    li s8, 0                # Coordenada X inicial
+    li s9, 124              # Coordenada Y inicial (altura total da tela - altura da barra)
+    li t0, 256              # Largura da tela (256 pixels)
+    li t1, 4                # Altura da barra
+    li t3, 0                # Contador da altura da barra
+
+    desenhar_barra_inferior:
+        bge t3, t1, fim_barra_inferior # Verifica se a altura foi desenhada completamente
+        li s8, 0                # Reinicia a coordenada X para cada linha de altura
+
+        barra_inferior:
+            bge s8, t0, fim_linha_barra_inferior    # Verifica se a linha da barra foi desenhada completamente
+            li t2, 0xff                             # Parte alta da cor branca (0xFFFFFF)
+            slli t2, t2, 8
+            addi t2, t2, 0xff
+            slli t2, t2, 8
+            addi t2, t2, 0xff                       # t2 = 0xFFFFFF
+            sw t2, corTela(zero)
+            sw s8, saida_x(zero)
+            sw s9, saida_y(zero)
+            sw s7, escritaTela(zero)
+            addi s8, s8, 1
+            j barra_inferior
+
+        fim_linha_barra_inferior:
+            addi s9, s9, 1      # Avança para a próxima linha da altura
+            addi t3, t3, 1      # Incrementa o contador da altura
+            j desenhar_barra_inferior
+
+    fim_barra_inferior:
+
+    # Desenhando a rede no meio
+    li s8, 127              # Posição X central
+    li s9, 4                # Início da rede
+    li t0, 124              # Altura total da tela
+    li t1, 3                # Largura da rede
+    li t3, 0                # Contador da largura da barra
+    li t4, 0                # Contador altura de cada quadrado
+
+    desenhar_rede:
+        bge t3, t1, fim_rede # Verifica se a largura foi desenhada completamente
+        li s9, 4                # Reinicia a coordenada X para cada linha de altura
+        li t4, 0
+
+        rede_meio:
+            bge s9, t0, fim_rede_meio
+            li t2, 0xfa       # Parte alta da cor amarela (0xFAE808)
+            slli t2, t2, 8
+            addi t2, t2, 0xe8
+            slli t2, t2, 8
+            addi t2, t2, 0x08  # t2 = 0xFAE808
+            sw t2, corTela(zero)
+            sw s8, saida_x(zero)
+            sw s9, saida_y(zero)
+            sw s7, escritaTela(zero)
+            addi t4, t4, 1
+            addi s9, s9, 1
+            bge t4, t1, jump_four
+            j rede_meio
+
+        jump_four:
+            addi s9, s9, 4   # Espessura da linha da rede
+            li t4, 0
+            j rede_meio
+
+        fim_rede_meio:
+            addi s8, s8, 1      # Avança para a próxima linha da altura
+            addi t3, t3, 1      # Incrementa o contador da altura
+            j desenhar_rede
+
+    fim_rede:
+
+    fim:
+        j fim
