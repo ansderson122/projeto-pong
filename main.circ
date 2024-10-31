@@ -183,7 +183,6 @@
     </comp>
     <comp lib="11" loc="(370,80)" name="Rv32im">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
-      <a name="stateVisible" val="false"/>
     </comp>
     <comp lib="11" loc="(980,1020)" name="SocPio">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>

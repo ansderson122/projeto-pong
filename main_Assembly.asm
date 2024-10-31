@@ -12,7 +12,10 @@ _start:
 # que inica em 0x478 para X e vai paar 0x47c
 .equ vetor_direcao 0x480 
 
+.equ tamanho_tela_y 32
+.equ tamanho_tela_x 64
 .equ altura_players 5 #essa altura vai de -5 a +5 aparti do centro_players
+.equ lagura_players 1
 .equ centro_players 17
 .equ distacia_bordaX_tela_player 5
  
@@ -39,8 +42,9 @@ li t3, centro_players   # para a possição y do player
 li t4, centro_players   # para a possição y IA
 
 li a1,0
-li t0,6
-li s8,5 # i = 0
+li t0,lagura_players
+addi t0,t0,distacia_bordaX_tela_player
+li s8,distacia_bordaX_tela_player # i = 0
 li a6,altura_players
 
 
@@ -62,8 +66,11 @@ j begin_for_i
 end_for_i:
 bge a1,s7,inicializacao_bola
 addi a1,a1,1
-li s8, 58
-li t0, 59
+li s8, distacia_bordaX_tela_player
+li t0, tamanho_tela_x
+sub s8,t0,s8 # distacia_bordaX_tela_player - tamanho_tela_x
+li t0,lagura_players
+add t0,t0,s8
 j begin_for_i
 
 
@@ -89,6 +96,7 @@ li t5, 0 # t5 esta reservado para reduzir a velocidade da  bola
 loopPrincipal:
 jal ra, pressButton
 jal ra, movimento_bola
+jal ra, IA
 
 j loopPrincipal
 
@@ -108,9 +116,10 @@ fim_pressButton:
 jr ra 
 moveParaCima:
 sw s7,0(tp)
-li a3, 5
-addi a4,t3, -6
-addi a1,t3, 6
+li a3, distacia_bordaX_tela_player
+li a1,altura_players
+sub a4,t3, a1
+add a1,t3, a1
 bge zero,a4,fim_pressButton 
 li a5, 1
 moveParaCima_i:
@@ -134,10 +143,12 @@ sw zero, saida_y(zero)
 jr ra
 moveParaBaixo:
 sw s7,0(tp)
-li a3, 5
-addi a4,t3, 6
-addi a1,t3, -6
-li a5, 31
+li a3, distacia_bordaX_tela_player
+li a1,altura_players
+add a4,t3, a1
+sub a1,t3, a1
+li a5, tamanho_tela_y
+addi a5,a5,-1
 bge a4,a5,fim_pressButton
 li a5, 1
 moveParaBaixo_i:
@@ -216,8 +227,9 @@ altera_fim:
 
 #-- verificar colisões entre a bola e os PLAYERS e altera 
 #-- a direção da bola
-li a6, 5
-li a7, 58
+li a6, distacia_bordaX_tela_player
+li a7, tamanho_tela_x 
+sub a7,a7,a6
 
 beq a2, a6, verifica_y_player
 beq a2, a7, verifica_y_IA
@@ -251,7 +263,65 @@ addi t5,t5,1
 jr ra 
 
 
+IA:
+li a1, 4
+lw a2,posicao_bola(zero)
+lw a3,posicao_bola(a1) # possiçao y da bola 
+li a4, tamanho_tela_x 
+li a5,20
+sub a4,a4,a5
+addi a4,a4,10
 
+slt a4,a2,a4
+bne a4,zero,AI_fim
+
+
+slt a2,a3,t4
+beq a2,zero,IA_subir
+bne a2,zero,IA_descer
+
+AI_fim:
+jr ra 
+IA_descer:
+li a3, distacia_bordaX_tela_player
+li a4, tamanho_tela_x
+sub a3,a4,a3 # distacia_bordaX_tela_player - tamanho_tela_x
+li a1,altura_players
+sub a4,t4, a1
+add a1,t4, a1
+bge zero,a4,AI_fim
+addi t4,t4,-1
+j IA_desenha
+
+
+IA_subir:
+li a3, distacia_bordaX_tela_player
+li a4, tamanho_tela_x
+sub a3,a4,a3 # distacia_bordaX_tela_player - tamanho_tela_x
+li a1,altura_players
+add a4,t4, a1
+sub a1,t4, a1
+li a5, tamanho_tela_y
+addi a5,a5,-1
+bge a4,a5,AI_fim
+addi t4,t4,1
+j IA_desenha
+
+
+IA_desenha:
+sw t6, corTela(zero)
+sw a3, saida_x(zero)
+sw a4, saida_y(zero)
+sw s7, escritaTela(zero)
+addi a5,a5,-1
+sw zero, corTela(zero)
+sw a3, saida_x(zero)
+sw a1, saida_y(zero)
+sw s7, escritaTela(zero)
+addi a3,a3,1
+sw zero, saida_x(zero)
+sw zero, saida_y(zero)
+jr ra
 
 
 fim:
