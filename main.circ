@@ -152,6 +152,7 @@
     </comp>
     <comp lib="11" loc="(1050,480)" name="SocBus">
       <a name="SocBusIdentifier" val="0x0000019131E813675037061b"/>
+      <a name="TraceVisible" val="false"/>
     </comp>
     <comp lib="11" loc="(1140,340)" name="Socmem">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
@@ -182,13 +183,14 @@
     </comp>
     <comp lib="11" loc="(370,80)" name="Rv32im">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
+      <a name="stateVisible" val="false"/>
     </comp>
     <comp lib="11" loc="(980,1020)" name="SocPio">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
       <a name="StartAddress" val="0x418"/>
       <a name="direction" val="outputonly"/>
       <a name="label" val="Saida_y"/>
-      <a name="width" val="7"/>
+      <a name="width" val="5"/>
     </comp>
     <comp lib="11" loc="(980,1230)" name="SocPio">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
@@ -202,7 +204,7 @@
       <a name="StartAddress" val="0x400"/>
       <a name="direction" val="outputonly"/>
       <a name="label" val="Saida_x"/>
-      <a name="width" val="8"/>
+      <a name="width" val="6"/>
     </comp>
     <comp lib="4" loc="(1940,970)" name="D Flip-Flop">
       <a name="appearance" val="logisim_evolution"/>

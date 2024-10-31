@@ -12,6 +12,11 @@ _start:
 # que inica em 0x478 para X e vai paar 0x47c
 .equ vetor_direcao 0x480 
 
+.equ altura_players 5 #essa altura vai de -5 a +5 aparti do centro_players
+.equ centro_players 17
+.equ distacia_bordaX_tela_player 5
+ 
+
 li a0, 0x8
 slli a0,a0,8
 addi tp,a0,0x78 # tp vai ser usado para o endereço do controle 
@@ -30,17 +35,19 @@ add s8,s8,s9
 add t6,s8,s10      #O t6 vai ser o branco 
 sw t6 , corTela(zero)
 # fim da cor
-li t3, 17  # para a possição y do player
-li t4,17   # para a possição y IA
+li t3, centro_players   # para a possição y do player
+li t4, centro_players   # para a possição y IA
 
 li a1,0
 li t0,6
 li s8,5 # i = 0
+li a6,altura_players
+
 
 begin_for_i:
 bge s8,t0,end_for_i	
-li t1,22
-li s9,11 # j = 0, a altura do player e de 11 pixels 
+addi t1,t3,altura_players
+sub s9,t3,a6 # j = 0, a altura do player e de 11 pixels 
 
 begin_for_j:
 bge s9,t1,end_for_j
@@ -155,7 +162,7 @@ jr ra
 
 
 movimento_bola:
-li a1, 10
+li a1, 1
 bge a1, t5,fim_movimento_bola
 li t5, 0
 li a1,4
