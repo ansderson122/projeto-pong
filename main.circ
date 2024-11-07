@@ -156,6 +156,7 @@
     </comp>
     <comp lib="11" loc="(1140,340)" name="Socmem">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
+      <a name="label" val="Memoria_de_intrucao"/>
     </comp>
     <comp lib="11" loc="(1470,1010)" name="SocPio">
       <a name="SocBusSelection" val="0x0000019131E813675037061b"/>
