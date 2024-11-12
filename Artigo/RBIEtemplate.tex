@@ -1,0 +1,316 @@
+%
+% Template for RBIE papers in LaTeX
+%
+
+% The above language combination is for this template document only.
+% You should use one of the following:
+\documentclass[english, spanish,brazilian]{RBIEarticle} % for papers in portuguese
+%\documentclass[brazilian, spanish, english]{RBIEarticle} % for papers in english
+%\documentclass[brazilian, english, spanish]{RBIEarticle} % for papers in spanish
+
+% Papers in Portuguese or Spanish may require the following lines:
+\usepackage[utf8]{inputenc} % chooses UTF-8 as the main character set
+\usepackage[T1]{fontenc} % for correct syllable separation in accented words
+
+% The next two statements are needed for the example table in this document
+% (i.e. you don't necessarily need them in your own paper)
+\usepackage{colortbl}
+\definecolor{gray}{gray}{.8}
+
+% Citations and references (Biblatex)
+\usepackage[style=apa]{biblatex}
+\usepackage{csquotes}
+\addbibresource{references.bib}
+
+% Here goes the paper main title
+\title{Implementação do Jogo Pong em RISC-V com Logisim Evolution: Um Guia Educacional}
+
+% Here goes the paper author information (repeat for two or more authors)
+\author{%
+	\parbox{8cm}{%
+		<Full name Author 1>\\
+		<Affiliation>\\
+		ORCID: \href{https://orcid.org/0000-0000-0000-0000}{0000-0000-0000-0000}\\
+		<author1@my-email>
+	}
+	\parbox{8cm}{%
+		<Full name Author 2>\\
+		<Affiliation>\\
+		ORCID: \href{https://orcid.org/0000-0000-0000-0000}{0000-0000-0000-0000}\\
+		<author2@my-email>
+	}
+}
+
+\Submission{dd/Mmm/yyyy}
+\First_round_notif{dd/Mmm/yyyy}
+\New_version{dd/Mmm/yyyy}
+\Second_round_notif{dd/Mmm/yyyy}
+\Camera_ready{dd/Mmm/yyyy}
+\Edition_review{dd/Mmm/yyyy}
+\Available_online{dd/Mmm/yyyy}
+\Published{dd/Mmm/yyyy}
+
+% Here goes the page heading information
+\heading{Surname, initials Author 1, Surname, initials Author 2 (for 1 to 2 Authors)	\\
+Last author’s surname et al. (for more than 2 authors)
+}{RBIE v.VV – yyyy}
+
+% And finally here goes the citation information
+\citeas{Last name, Initials., \ldots \& Last name, Initials.  (Year). Article title in the original language. Revista Brasileira de Informática na Educação, vol, pp-pp. https://doi.org/10.5753/rbie.yyyy.id}
+
+%====================================================================
+%\hyphenpenalty=10000
+%\setcounter{page}{01}
+
+\begin{document}
+\maketitle
+
+% If the manuscript is written in English, then this element must be removed.
+\begin{otherlanguage}{brazilian}
+\begin{abstract}
+<Aqui vem o resumo do artigo em português. O resumo deve resumir o conteúdo do manuscrito e deve conter no mínimo 150 e no máximo 300~palavras e deve ser escrito em itálico, Times~10, justificado, sem recuo especial e sem espaçamento antes ou depois.>
+\keywords <O resumo deve ser seguido de 3 a 10 palavras-chave. As palavras-chave devem ser justificadas com espaçamento simples, sem recuo especial, sem espaçamento antes e espaçamento exato de 24 pontos depois. O texto deve ser configurado com a fonte Times em tamanho de fonte 10 e em estilo de fonte itálico. Use ponto e vírgula como separador. As palavras-chave devem iniciar com letra maiúsculas.>
+\end{abstract}
+\end{otherlanguage}
+
+\begin{otherlanguage}{english}
+\begin{abstract}
+<Here comes the abstract of the paper in English. The abstract should summarize the contents of the manuscript and should contain at least 150 and at most 300~words long and must be written in italics, Times~10, justified, with no special indentation and no spacing before or after.>
+\keywords <Abstract must be followed by 3 to 10 keywords. The keywords should be justified with a line space single, no special indentation, with no spacing before and spacing of exactly 24-points after. The text should be set in Times 10-point font size and in italic font style. Please use semi-colon as a separator. Keywords must be title cased.>
+\end{abstract}
+\end{otherlanguage}
+
+% If the manuscript is written in English, then this element must be removed.
+\begin{otherlanguage}{spanish}
+\begin{abstract}
+<Aquí viene el resumen del artículo en español. El resumen debe resumir el contenido del manuscrito y debe contener un mínimo de 150 y un máximo de 300~palabras y debe estar escrito en cursiva, Times~10, justificado, sin sangría especial y sin espacio antes o después.>
+\keywords <El resumen debe ir seguido de 3 a 10 palabras clave. Las palabras clave deben estar justificadas con un espacio de línea simple, sin sangría especial, sin espacios antes y con un espacio de exactamente 24 puntos después. El texto debe configurarse fuente Times con tamaño de 10 puntos y en estilo de fuente cursiva. Utilice punto y coma como separador. Las palabras clave deben comenzar con una letra mayúscula.>
+\end{abstract}
+\end{otherlanguage}
+
+\pagebreak
+
+%====================================================================
+
+\section{Introdução}
+
+
+
+\section{Fundamentos Teóricos}
+
+Nesta seção, abordamos as ferramentas e conceitos fundamentais para o desenvolvimento do jogo Pong em Assembly na arquitetura RISC-V, utilizando o simulador de circuitos digitais Logisim Evolution.
+
+\subsection{Logisim Evolution}
+
+O Logisim Evolution é uma ferramenta de simulação de circuitos digitais com interface gráfica que permite a criação de circuitos de forma visual. Ele é amplamente utilizado no ensino de arquitetura de computadores, pois possibilita a construção de circuitos complexos de maneira prática, facilitando o aprendizado de conceitos de lógica digital e organização de sistemas.
+
+Com o Logisim Evolution, é possível construir processadores, configurar memórias, criar barramentos de comunicação e conectar dispositivos de entrada e saída. O ambiente permite simular o comportamento desses componentes em tempo real, oferecendo um ambiente acessível e seguro para experimentar e testar circuitos sem a necessidade de hardware físico.
+
+Neste projeto, o Logisim Evolution foi utilizado para integrar um processador RISC-V já implementado com outros componentes prontos oferecidos pela ferramenta, permitindo que o foco estivesse na lógica do jogo Pong e na interação entre hardware e software.
+
+\subsection{Componentes do Logisim Evolution}
+
+No projeto, os seguintes componentes do Logisim Evolution foram usados para construir o circuito do jogo Pong:
+
+\begin{itemize}
+    \item \textbf{Processador RISC-V:}
+    O processador RISC-V já estava implementado no Logisim e foi utilizado para executar o código em Assembly, que controla a lógica do jogo. Esse processador é responsável por processar as instruções, movimentar a bola e as raquetes e gerenciar as interações entre os elementos do jogo. 
+
+    A arquitetura RISC-V é caracterizada pelo conjunto reduzido de instruções (\textit{Reduced Instruction Set Computer} - RISC), que simplifica o design do processador e possibilita um desempenho eficiente. A escolha pelo RISC-V se deve à sua simplicidade, flexibilidade e amplo uso no ensino.
+    
+    \item \textbf{Memórias:}
+    Duas memórias foram configuradas no circuito: uma para armazenar o código Assembly e outra para armazenar dados, como a posição da bola e das raquetes. A memória é fundamental para manter o estado do jogo e permitir a execução contínua das instruções.
+
+    A memória de dados armazena variáveis necessárias para o funcionamento do jogo, como coordenadas de posição e estados de controle, que são acessados e atualizados pelo processador durante o jogo.
+    
+    \item \textbf{Dispositivos de Entrada e Saída:}
+    Os dispositivos de entrada e saída são responsáveis por capturar interações do usuário e por exibir o jogo na tela.
+
+    \item \textbf{Tela RGB:} Configurada para exibir o jogo Pong em uma matriz de pixels, onde cada posição pode ser manipulada para representar a bola e as raquetes. A comunicação com a tela é realizada através de endereços específicos, e o processador envia dados de posição e cor para renderizar o jogo de forma precisa.
+
+
+\subsection{Programação em Assembly para RISC-V}
+
+Assembly é uma linguagem de programação de baixo nível que permite o controle direto do hardware. No caso do RISC-V, o Assembly é essencial para manipular os registradores, acessar a memória e controlar os dispositivos de entrada e saída. A linguagem Assembly para RISC-V inclui instruções básicas para operações aritméticas, movimentação de dados e controle de fluxo, o que possibilita a criação de programas que interagem diretamente com o hardware.
+
+No projeto do jogo Pong, o Assembly foi usado para implementar as principais lógicas do jogo:
+\begin{itemize}
+    \item \textbf{Inicialização:} Define as posições iniciais da bola e das raquetes e configura a tela.
+    \item \textbf{Movimentação do Jogador e da Bola:} As instruções Assembly controlam a posição da bola e das raquetes, detectam colisões e respondem às interações do jogador.
+    \item \textbf{Controle de Colisões:} A lógica de colisão é fundamental para o jogo e permite que a bola rebata nas raquetes e nas bordas da tela.
+\end{itemize}
+
+O Assembly oferece um alto grau de controle, mas exige um bom entendimento da arquitetura do processador e das interações entre hardware e software. Essa linguagem é ideal para fins educacionais, pois proporciona uma compreensão profunda do funcionamento interno de sistemas embarcados e do controle de dispositivos de forma direta.
+
+\subsection{O Jogo Pong}
+
+Pong é um dos primeiros videogames desenvolvidos, famoso por sua simplicidade e relevância histórica. Ele simula uma partida de tênis de mesa, onde cada jogador controla uma raquete para rebater a bola. A implementação do Pong no projeto atual utiliza uma tela RGB para representar a bola e as raquetes como pixels que se movem de acordo com as instruções Assembly processadas pelo RISC-V.
+
+No contexto deste projeto, o Pong foi escolhido por sua simplicidade e pela oportunidade de explorar conceitos como:
+\begin{itemize}
+    \item \textbf{Movimentação e Controle de Colisões:} A bola e as raquetes são controladas por instruções Assembly, e o código verifica constantemente as colisões com as bordas e com as raquetes, alterando a direção da bola conforme necessário.
+    \item \textbf{Renderização Gráfica em Baixo Nível:} A tela RGB é manipulada diretamente pelo processador, que envia dados de posição e cor para atualizar o display.
+    \item \textbf{Interação com o Jogador:} Os comandos de entrada são traduzidos em movimentação da raquete, permitindo que o jogador interaja com o jogo em tempo real.
+\end{itemize}
+
+A implementação do Pong neste projeto destaca a aplicabilidade de conceitos de arquitetura de computadores e programação de baixo nível, oferecendo uma visão prática e integrada do funcionamento de sistemas embarcados.
+
+
+
+
+\section{Trabalhos Relacionados}
+
+Nesta seção, discutimos trabalhos que utilizam simuladores no ensino de arquitetura de computadores, projetos educacionais baseados na arquitetura RISC-V e a implementação de jogos retro para a aprendizagem prática em sistemas embarcados. Esses trabalhos destacam o impacto dessas abordagens na educação e ajudam a contextualizar o desenvolvimento do jogo Pong em Assembly com o Logisim Evolution.
+
+\subsection{Simuladores no Ensino de Arquitetura de Computadores}
+
+O uso de simuladores é uma prática consolidada no ensino de arquitetura de computadores, permitindo que estudantes experimentem conceitos de hardware e software em um ambiente seguro e interativo. Ferramentas como o Logisim Evolution são amplamente utilizadas em cursos de engenharia e ciências da computação, pois possibilitam a construção de circuitos complexos e a simulação de operações de processadores, memórias e dispositivos de entrada e saída. 
+
+Estudos mostram que o uso de simuladores facilita a visualização de conceitos abstratos, como o funcionamento de barramentos, registradores e lógica digital. Por exemplo, pesquisas de \cite{autorAno} evidenciam que estudantes que utilizam simuladores no aprendizado de arquitetura têm uma compreensão mais sólida de temas como fluxo de dados, operações de controle e organização de sistemas. Além disso, o Logisim Evolution permite que circuitos digitais sejam montados de forma prática e visual, o que estimula o aprendizado e melhora a retenção de conceitos fundamentais.
+
+\subsection{Projetos Educacionais com RISC-V}
+
+A arquitetura RISC-V tem ganhado popularidade em projetos educacionais devido à sua simplicidade, flexibilidade e ao fato de ser uma arquitetura aberta. O RISC-V permite que alunos experimentem uma ISA real, desenvolvendo habilidades essenciais para o entendimento de arquiteturas de computadores e sistemas embarcados. Segundo \cite{outroAutorAno}, o uso do RISC-V em atividades de laboratório e simulação facilita a compreensão de operações de controle, manipulação de memória e otimização de instruções, aspectos que são fundamentais no aprendizado de Assembly.
+
+Projetos educacionais que utilizam o RISC-V geralmente focam no desenvolvimento de sistemas embarcados e no controle direto de hardware, proporcionando aos estudantes uma visão prática de como os processadores manipulam dados e interagem com outros componentes. No presente trabalho, a escolha do RISC-V permitiu uma integração direta com o código Assembly para controlar a lógica do jogo Pong, aproveitando a simplicidade do RISC-V para facilitar a implementação e o controle de hardware no Logisim Evolution.
+
+\subsection{Implementação de Jogos Simples no Ensino de Sistemas Embarcados}
+
+O uso de jogos simples, como Pong e Tetris, tem se mostrado uma estratégia eficaz para ensinar lógica de programação, sistemas embarcados e controle de hardware. Jogos como esses envolvem elementos básicos de movimentação, colisão e interatividade, que são ideais para ilustrar o funcionamento de instruções de controle e lógica digital. Trabalhos como o de \cite{autorJogoSimples} exploram a implementação de jogos simples para ensinar conceitos de temporização, controle de entrada/saída e renderização gráfica em baixo nível.
+
+Esses projetos ajudam os alunos a compreenderem a relação entre software e hardware, permitindo que eles visualizem como as instruções de baixo nível controlam os elementos do jogo em tempo real. Além disso, a implementação de jogos no contexto educacional promove o engajamento e ajuda a tornar os conceitos complexos mais acessíveis. No presente projeto, a escolha do jogo Pong foi motivada pela simplicidade e pela capacidade de representar a lógica de movimentação e colisão usando Assembly para RISC-V, proporcionando um aprendizado integrado de conceitos de hardware e software.
+
+\subsection{Jogos Retro em Sistemas Embarcados}
+
+Jogos retro, como Pong e Tetris, são amplamente utilizados para o ensino de sistemas embarcados e arquitetura de computadores. Eles oferecem uma interface simples, com gráficos em baixo nível e uma lógica de jogo relativamente fácil de implementar, permitindo que estudantes se concentrem nos aspectos essenciais de controle de hardware e lógica digital. Trabalhos como o de \cite{autorJogoRetro} mostram que jogos retro permitem uma exploração prática de conceitos como controle de dispositivos de entrada e saída, manipulação de memória e lógica de colisão.
+
+Esses projetos educacionais destacam a importância de usar interfaces gráficas simples para ensinar os fundamentos da renderização e da interação em sistemas embarcados. A implementação do Pong neste projeto segue essa abordagem, usando o Assembly para controlar diretamente a movimentação da bola e das raquetes, além de implementar a lógica de colisão e renderização gráfica em uma tela RGB no Logisim Evolution.
+
+
+
+
+\section{Tables}
+Tables (e.g., \autoref{tab:one}) must be positioned preferably at the top or bottom of the page within the given margins. Avoid breaking tables on different pages, unless it does not fit one page only. Tables should be properly numbered, centered and should always have a caption positioned above it. Captions should be centered with 9-point Times, with 12-point spacing before and 6-point after. The final sentence of a caption must end with a period.
+
+Table text should be 10-point Times, with no spacing before or after.
+
+\begin{table}[h]
+	\caption{Caption table 1}
+	\label{tab:one}
+	\centering\footnotesize%
+	\begin{tabular}{|c|c|}
+		\hline
+		\rowcolor{gray} \textbf{Example column 1} & \textbf{Example column 2}\\
+		\hline
+		Example text 1 & Example text 2\\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\subsection{Figures}
+Figures should be produced electronically and integrated into the document. As they may lose quality when integrated into the document, it is important to check if it is with a good resolution (at least 300 dpi is recommended). Check line drawings, grids, and details within the figures that must be clearly readable and may not be written one on top of the other, considering 100\% view and print version.
+
+Figures (e.g., \autoref{fig:one}) must appear inside the designated margins. They should be properly numbered, centered and should always have a caption positioned under it. Captions should be centered, with 9-point font size. Spacing before and after should be of 6-point and 12-point, respectively.
+
+The final sentence of a caption must end with a period. 
+
+\begin{figure}[h]
+	\centerline{\includegraphics[scale=0.25]{newlogo.png}}
+	\caption{Caption figure 1}
+	\label{fig:one}
+\end{figure}
+
+
+\subsection{Equations}
+Special attention with equations as some characters may be lost as well as formatting. Equations (e.g., \autoref{eq:one}) should be placed on a separate line, numbered and centered. An extra line space should be added below the equation. The numbers accorded to equations must appear enclosed in brackets and positioned right side (with some space after the equation).
+The use of a table with two columns is advisable.
+
+\begin{equation}
+	a = b + c
+	\label{eq:one}
+\end{equation}
+
+
+\subsection{Program Code}
+Program listing commands in text (e.g., \autoref{code:one}) should be set in 9-point Courier New, with no spacing before or after, and no first line indent. Codes must appear inside the designated margins, with external borders and they should be properly numbered. Captions should be centered, with 9-point font size. Spacing before and after should be of 6-point and 12-point, respectively.
+
+\begin{code}[h]
+	\begin{lstlisting}
+begin
+    Writeln('Hello World!!');
+end.
+	\end{lstlisting}
+	\caption{Example of code}
+	\label{code:one}
+\end{code}
+
+
+\subsection{In-Text Citations and Reference List}
+
+When you use others' ideas in your paper, you should credit them with an in-text citation. In-text citations must follow APA 7 Style, which consist of the surname of the authors and the year of publication. More on \href{https://apastyle.apa.org/}{Writing In-Text Citations in APA Style}, please refer to \href{https://libguides.brenau.edu/APA7}{APA Citation Guide (7th edition)}.
+
+The  \href{https://libguides.brenau.edu/APA7}{APA Citation Guide (7th edition)} explains why and what to cite, citing references in text, the purpose of the reference list and how to build the reference list. It is possible to find more information on  \href{https://libguides.brenau.edu/APA7}{APA Citation Guide (7th edition)} and on how to deal with missing information as well as class notes, class lectures, presentations, social media, among other sources. Some sample references are provided by the  \href{https://libguides.brenau.edu/APA7}{APA Citation Guide (7th edition)}.
+
+The reference list must be ordered alphabetically. References should be set to 12-point, justified, with a single line space, 6-point additional spacing after and hanging indent of 0.75 centimeter.
+
+Citation 1 \parencite{Baker2011}
+
+Citation 2 \parencite{Seffrin2013}
+
+Citation 3 \parencite{Brasil2008}
+
+Citation 4 \parencite{Kautzman2015}
+
+Citation 5 \parencite{Sweller1991}
+
+Citation 6 \parencite{Clark2006}
+
+Citation 7 \parencite{Mason2012}
+
+
+\section{Conclusions}
+We hope you find the information in this template useful, and it helps you in the preparation of your manuscript.
+
+If you find inconsistencies or need additional information, please contact the editors.
+
+
+\section*{Acknowledgements}
+%Place the acknowledgements only in the final version of the manuscript, after acceptance. They should be placed before the references section without numbering.
+Our special thanks to Rafael Bohrer Ávila, Matheus Segalotto and Bruno Fagundes da Silva for their help with this latex template. 
+
+
+%====================================================================
+
+\printbibliography
+%See the guidelines for metadata and references:
+%https://sol.sbc.org.br/journals/index.php/rbie/libraryFiles/downloadPublic/71
+%====================================================================
+
+
+ \section*{Appendix 1}
+\label{apendice1}
+
+If any, the appendix should appear directly after the references without numbering, and not on a new page.
+
+\begin{enumerate}
+    \item[A] When the reference has a Link
+    \begin{itemize}
+        \item Make a clickable link on the respective URL (if you are using MS-Word, use the tool Insert Hyperlink, informing the URL).
+    \end{itemize}
+    \item[B] Allow readers to search for the reference on Google Scholar
+    \begin{itemize}
+        \item Copy the title of the reference and put in between ``\%22'', including the ``+'' character between each word: http://scholar.google.com/scholar?q=\%22PASTE+TITLE+\\HERE\%22\&hl=en\&lr=\&btnG=Search
+        \item If it is a common title, you may add the author, such as in: \\http://scholar.google.com/ scholar?q=PASTE+AUTHOR+HERE+\%22PASTE+TITLE\\+HERE\%22\&hl=en\&lr=\&btnG=Search
+        \item Or you may use the publication year (YEAR) to restrict the results, such as in:\\ http://scholar.google.com/scholar?
+        q=PASTE+AUTHOR+HERE+\%22PASTE+TITLE\\+HERE\%22\&hl=en\&lr=\&btnG=Search \&as\_ylo=YEAR\&as\_yhi=YEAR
+        \item It is highly advisable to confirm if the link is correct (and if Google Scholar presents a correct result).
+        \item Include the term ``[GS SEARCH]'' at the end of each reference and make “GS SEARCH” a hyperlink with the URL just created.
+    \end{itemize}
+    \item[C] Allow readers to access references with DOI
+    \begin{itemize}
+        \item Add DOI hyperlink (make it clickable) using the corresponding URL (the URL can be created adding ``http://doi.org/'' in front of the DOI hyperlink).
+    \end{itemize}
+\end{enumerate}
+
+\end{document}
