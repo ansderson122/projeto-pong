@@ -5,7 +5,6 @@ _start:
 .equ escritaTela 0x448
 .equ corTela 0x460
 .equ memoria_de_video 0x478
-.equ controle 0x878 # esse endereço é muito grande
 .equ velocidadePlayer 1 
 
 .equ posicao_bola 0x478 # aqui é o endereço de menoria vetor posição da bola
@@ -210,19 +209,37 @@ add a3,a3,a5
 li a6,32
 li a7,64
 li s2, -1
-bge zero,a3,altera_Y
-bge a3,a6,altera_Y
+bge zero,a3,alteracao_vertical 
+bge a3,a6,alteracao_vertical
 j test_x
-altera_Y:
+
+alteracao_vertical:
 mul a5,a5,s2
 sw a5,vetor_direcao(a1)
+j fim_movimento_bola
+
 test_x:
-bge zero,a2,altera_x
-bge a2,a7,altera_x
+bge zero,a2,reincia_bola
+bge a2,a7,reincia_bola
 j altera_fim
-altera_x:
+
+reincia_bola:
+sub a2,a2,a4
+sub a3,a3,a5
+
 mul a4,a4,s2
 sw a4,vetor_direcao(zero)
+
+sw zero, corTela(zero)
+sw a2, saida_x(zero) 
+sw a3, saida_y(zero)
+sw s7, escritaTela(zero)
+li a2,32
+li a3,16
+sw a2,posicao_bola(zero)
+sw a3,posicao_bola(a1)
+j fim_movimento_bola
+
 altera_fim:
 
 #-- verificar colisões entre a bola e os PLAYERS e altera 
