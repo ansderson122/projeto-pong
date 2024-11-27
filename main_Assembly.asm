@@ -1,22 +1,23 @@
 _start:
-.equ saida_x 0x400
-.equ saida_y 0x418
-.equ resetTela 0x430
-.equ escritaTela 0x448
-.equ corTela 0x460
-.equ memoria_de_video 0x478
-.equ velocidadePlayer 1 
-
-.equ posicao_bola 0x478 # aqui é o endereço de menoria vetor posição da bola
-# que inica em 0x478 para X e vai paar 0x47c
-.equ vetor_direcao 0x480 
-
-.equ tamanho_tela_y 32
-.equ tamanho_tela_x 64
-.equ altura_players 5 #essa altura vai de -5 a +5 aparti do centro_players
-.equ lagura_players 1
-.equ centro_players 17
-.equ distacia_bordaX_tela_player 5
+.equ saida_x 0x400            # Endereço para a saída X
+.equ saida_y 0x418            # Endereço para a saída Y
+.equ resetTela 0x430          # Endereço para resetar a tela
+.equ escritaTela 0x448        # Endereço para habilitar a escrita na tela
+.equ corTela 0x460            # Endereço para definir a cor do pixel
+.equ memoria_de_video 0x478   # Endereço da memória de vídeo
+.equ controle 0x878           # Endereço do controle
+    
+.equ posicao_bola 0x478       # Endereço inicial da posição da bola
+.equ vetor_direcao 0x480      # Vetor de direção da bola
+        
+.equ tamanho_tela_y 32        # Altura da tela
+.equ tamanho_tela_x 64        # Largura da tela
+        
+.equ velocidadePlayer 1       # Velocidade do jogador
+.equ altura_players 5         # Altura das raquetes (-5 a +5 a partir do centro)
+.equ largura_players 1        # Largura das raquetes
+.equ centro_players 17        # Posição inicial central das raquetes
+.equ distancia_bordaX_tela_player 5 # Distância entre a raquete e a borda lateral
  
 
 li a0, 0x8
