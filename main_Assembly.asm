@@ -19,27 +19,29 @@ _start:
 .equ centro_players 17        # Posição inicial central das raquetes
 .equ distancia_bordaX_tela_player 5 # Distância entre a raquete e a borda lateral
  
+# Reset da tela
+li a0, 1                   # Carrega o valor 1 em a0 (ativo o reset)
+sw a0, resetTela(zero)     # Escreve no endereço de reset para limpar a tela
 
-li a0, 0x8
-slli a0,a0,8
-addi tp,a0,0x78 # tp vai ser usado para o endereço do controle 
+# Configuração do endereço do controle
+li a0, 0x8                 # Carrega o valor base (8) em hexadecimal
+slli a0, a0, 8             # Desloca o valor 8 bits à esquerda (equivalente a multiplicar por 256)
+addi tp, a0, 0x78          # Soma o valor deslocado com 0x78 para definir o endereço do controle em tp
 
-li a1,0
-li s7, 1
-sw s7,resetTela(zero)
+# Definição da cor branca
+li s8, 0xff                # Carrega o valor máximo (255) para o componente vermelho
+slli s8, s8, 16            # Desloca 16 bits à esquerda para posicionar no componente vermelho (RGB)
+li s9, 0xff                # Carrega o valor máximo (255) para o componente verde
+slli s9, s9, 8             # Desloca 8 bits à esquerda para posicionar no componente verde (RGB)
+li s10, 0xff               # Carrega o valor máximo (255) para o componente azul
+add s8, s8, s9             # Combina vermelho e verde no registrador s8
+add t6, s8, s10            # Adiciona o azul para formar a cor branca completa (RGB = 255,255,255)
+sw t6, corTela(zero)       # Escreve a cor branca no dispositivo de entrada/saída (corTela)
 
-# definido a cor 
-li s8, 0xff # vermenho
-slli s8,s8,16
-li s9, 0xff # verde
-slli s9,s9,8
-li s10, 0xff # azul
-add s8,s8,s9
-add t6,s8,s10      #O t6 vai ser o branco 
-sw t6 , corTela(zero)
-# fim da cor
-li t3, centro_players   # para a possição y do player
-li t4, centro_players   # para a possição y IA
+# Configuração inicial das posições
+li t3, centro_players      # Define a posição inicial Y do jogador como o centro da tela
+li t4, centro_players      # Define a posição inicial Y da IA como o centro da tela
+
 
 li a1,0
 li t0,lagura_players
