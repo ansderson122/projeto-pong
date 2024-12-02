@@ -44,9 +44,9 @@ li t4, centro_players      # Define a posição inicial Y da IA como o centro da
 
 
 li a1,0
-li t0,lagura_players
-addi t0,t0,distacia_bordaX_tela_player
-li s8,distacia_bordaX_tela_player # i = 0
+li t0,largura_players
+addi t0,t0,distancia_bordaX_tela_player
+li s8,distancia_bordaX_tela_player # i = 0
 li a6,altura_players
 
 
@@ -68,10 +68,10 @@ j begin_for_i
 end_for_i:
 bge a1,s7,inicializacao_bola
 addi a1,a1,1
-li s8, distacia_bordaX_tela_player
+li s8, distancia_bordaX_tela_player
 li t0, tamanho_tela_x
 sub s8,t0,s8 # distacia_bordaX_tela_player - tamanho_tela_x
-li t0,lagura_players
+li t0,largura_players
 add t0,t0,s8
 j begin_for_i
 
@@ -99,10 +99,7 @@ loopPrincipal:
 jal ra, pressButton
 jal ra, movimento_bola
 jal ra, IA
-
 j loopPrincipal
-
-
 
 # ------------------------ inicio do movimento do player
 pressButton: 
@@ -118,7 +115,7 @@ fim_pressButton:
 jr ra 
 moveParaCima:
 sw s7,0(tp)
-li a3, distacia_bordaX_tela_player
+li a3, distancia_bordaX_tela_player
 li a1,altura_players
 sub a4,t3, a1
 add a1,t3, a1
@@ -145,7 +142,7 @@ sw zero, saida_y(zero)
 jr ra
 moveParaBaixo:
 sw s7,0(tp)
-li a3, distacia_bordaX_tela_player
+li a3, distancia_bordaX_tela_player
 li a1,altura_players
 add a4,t3, a1
 sub a1,t3, a1
@@ -247,7 +244,7 @@ altera_fim:
 
 #-- verificar colisões entre a bola e os PLAYERS e altera 
 #-- a direção da bola
-li a6, distacia_bordaX_tela_player
+li a6, distancia_bordaX_tela_player
 li a7, tamanho_tela_x 
 sub a7,a7,a6
 
@@ -288,7 +285,7 @@ li a1, 4
 lw a2,posicao_bola(zero)
 lw a3,posicao_bola(a1) # possiçao y da bola 
 li a4, tamanho_tela_x 
-li a5,20
+li a5,40
 sub a4,a4,a5
 addi a4,a4,10
 
@@ -303,7 +300,7 @@ bne a2,zero,IA_descer
 AI_fim:
 jr ra 
 IA_descer:
-li a3, distacia_bordaX_tela_player
+li a3, distancia_bordaX_tela_player
 li a4, tamanho_tela_x
 sub a3,a4,a3 # distacia_bordaX_tela_player - tamanho_tela_x
 li a1,altura_players
@@ -313,9 +310,8 @@ bge zero,a4,AI_fim
 addi t4,t4,-1
 j IA_desenha
 
-
 IA_subir:
-li a3, distacia_bordaX_tela_player
+li a3, distancia_bordaX_tela_player
 li a4, tamanho_tela_x
 sub a3,a4,a3 # distacia_bordaX_tela_player - tamanho_tela_x
 li a1,altura_players
@@ -326,7 +322,6 @@ addi a5,a5,-1
 bge a4,a5,AI_fim
 addi t4,t4,1
 j IA_desenha
-
 
 IA_desenha:
 sw t6, corTela(zero)
@@ -346,15 +341,3 @@ jr ra
 
 fim:
 j fim
-
-
-
-
-
-
-
-
-
-
-
-
